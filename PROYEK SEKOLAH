@@ -1,0 +1,113 @@
+import os
+import zipfile
+
+# Folder utama proyek
+base_dir = "Proyek_Python_Sekolah"
+projek = {
+    "1_Pengingat_Tugas": {
+        "tugas.py": """import tkinter as tk
+from datetime import datetime
+
+tugas = []
+
+def tambah_tugas():
+    nama = entry_nama.get()
+    deadline = entry_deadline.get()
+    if nama and deadline:
+        tugas.append((nama, deadline))
+        listbox.insert(tk.END, f"{nama} - {deadline}")
+        entry_nama.delete(0, tk.END)
+        entry_deadline.delete(0, tk.END)
+
+root = tk.Tk()
+root.title("Pengingat Tugas Sekolah")
+
+tk.Label(root, text="Nama Tugas").pack()
+entry_nama = tk.Entry(root)
+entry_nama.pack()
+
+tk.Label(root, text="Deadline (YYYY-MM-DD)").pack()
+entry_deadline = tk.Entry(root)
+entry_deadline.pack()
+
+tk.Button(root, text="Tambah", command=tambah_tugas).pack()
+listbox = tk.Listbox(root)
+listbox.pack()
+
+root.mainloop()""",
+        "README.md": """# Pengingat Tugas Sekolah
+
+**Latar Belakang:** Banyak siswa sering lupa jadwal tugas.
+
+**Ide:** Membuat program Python sederhana untuk mencatat tugas dan tenggat waktu.
+
+**Manfaat:** Membantu siswa mengatur waktu belajar.
+
+**Cara Pakai:** Jalankan tugas.py dengan Python 3. Tkinter harus terinstall."""
+    },
+    "2_Chatbot_Konseling": {
+        "chatbot.py": """from nltk.chat.util import Chat, reflections
+
+pairs = [
+    ["(hi|halo|hai)", ["Halo! Ada yang bisa saya bantu?"]],
+    ["(siapa kamu)", ["Saya chatbot konseling sekolah."]],
+    ["(jadwal|pelajaran)", ["Coba cek jadwal di papan pengumuman, ya."]],
+    ["(terima kasih|thanks)", ["Sama-sama! Semangat belajar 💪"]],
+]
+
+chatbot = Chat(pairs, reflections)
+print("Chatbot Konseling Sekolah (ketik 'quit' untuk keluar)")
+chatbot.converse()""",
+        "README.md": """# Chatbot Konseling Sekolah
+
+**Latar Belakang:** Siswa kadang ingin bertanya atau butuh motivasi.
+
+**Ide:** Program chatbot sederhana untuk menjawab pertanyaan umum tentang sekolah.
+
+**Manfaat:** Memberikan siswa saran atau motivasi cepat.
+
+**Cara Pakai:** Jalankan chatbot.py. Instal NLTK dulu dengan `pip install nltk`."""
+    },
+    "3_Deteksi_Emosi": {
+        "emosi.py": """from textblob import TextBlob
+
+kalimat = input("Masukkan kalimat: ")
+analisis = TextBlob(kalimat).sentiment.polarity
+
+if analisis > 0:
+    print("Emosi positif 😊")
+elif analisis < 0:
+    print("Emosi negatif 😔")
+else:
+    print("Netral 😐")""",
+        "README.md": """# Deteksi Emosi dari Teks
+
+**Latar Belakang:** Guru ingin tahu kondisi emosional siswa dari teks.
+
+**Ide:** Program Python sederhana untuk menganalisis sentimen teks.
+
+**Manfaat:** Membantu mendeteksi apakah siswa sedang positif, negatif, atau netral.
+
+**Cara Pakai:** Jalankan emosi.py. Instal TextBlob dengan `pip install textblob`."""
+    }
+}
+
+# Membuat folder dan file
+os.makedirs(base_dir, exist_ok=True)
+for folder, files in projek.items():
+    folder_path = os.path.join(base_dir, folder)
+    os.makedirs(folder_path, exist_ok=True)
+    for filename, content in files.items():
+        with open(os.path.join(folder_path, filename), "w") as f:
+            f.write(content)
+
+# Membuat ZIP
+zip_path = "Proyek_Python_Sekolah.zip"
+with zipfile.ZipFile(zip_path, 'w') as zipf:
+    for root, dirs, files in os.walk(base_dir):
+        for file in files:
+            full_path = os.path.join(root, file)
+            arcname = os.path.relpath(full_path, base_dir)
+            zipf.write(full_path, os.path.join(os.path.basename(root), file))
+
+print(f"ZIP berhasil dibuat: {zip_path}")
